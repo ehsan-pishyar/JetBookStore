@@ -12,5 +12,6 @@ interface BookRepository {
     )
     fun getBooks(): Flow<List<BookResponse>>
     fun getBook(id: String): Flow<BookResponse>
-    fun deleteBook(id: String)
+    suspend fun deleteBook(id: String)
+    suspend fun refreshBooks()
 }
