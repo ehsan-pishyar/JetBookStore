@@ -15,3 +15,4 @@ dependencyResolutionManagement {
 
 rootProject.name = "ParsTasmimCodeChallengeEP"
 include(":app")
+include(":libraries:design_system")
