@@ -1,6 +1,6 @@
-package com.example.network.models
+package com.example.domain.models
 
-data class BookResponseDto(
+data class BookResponse(
     val title: String?,
     val author: String?,
     val id: String,
