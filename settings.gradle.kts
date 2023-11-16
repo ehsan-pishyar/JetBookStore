@@ -17,3 +17,8 @@ rootProject.name = "ParsTasmimCodeChallengeEP"
 include(":app")
 include(":libraries:design_system")
 include(":libraries:navigation")
+include(":features:splash")
+include(":features:home")
+include(":features:search")
+include(":features:details")
+include(":features:add_book")
