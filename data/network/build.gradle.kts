@@ -38,7 +38,7 @@ dependencies {
 
     val androidCoreVersion = "1.10.1"
     val retrofitVersion = "2.9.0"
-    val okHttpVersion = "4.11"
+    val okHttpVersion = "4.11.0"
     val interceptorVersion = "4.9.3"
     val hiltVersion = "2.45"
 
