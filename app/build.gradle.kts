@@ -57,6 +57,11 @@ dependencies {
 
     implementation(project(mapOf("path" to ":libraries:design_system")))
     implementation(project(mapOf("path" to ":libraries:navigation")))
+    implementation(project(mapOf("path" to ":features:add_book")))
+    implementation(project(mapOf("path" to ":features:splash")))
+    implementation(project(mapOf("path" to ":features:details")))
+    implementation(project(mapOf("path" to ":features:home")))
+    implementation(project(mapOf("path" to ":features:search")))
     val androidCoreVersion = "1.10.1"
     val lifecycleVersion = "2.6.2"
     val composeVersion = "1.7.2"
