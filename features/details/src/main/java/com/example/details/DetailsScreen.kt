@@ -22,18 +22,23 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Divider
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.platform.LocalLayoutDirection
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
-import androidx.compose.ui.tooling.preview.Preview
-import androidx.compose.ui.unit.LayoutDirection
+import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core.SharedViewModel
 import com.example.design_system.Background
 import com.example.design_system.IranYekan
 import com.example.design_system.LighterGray
@@ -50,12 +55,27 @@ import com.example.design_system.components.CustomText
 import com.example.design_system.components.CustomViewed
 
 @Composable
-fun DetailsScreen() {
-    DetailsContent()
-}
+fun DetailsScreen(
+    viewModel: DetailsViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = SharedViewModel(),
+    toSearchScreen: () -> Unit,
+    toHomeScreen: () -> Unit
+) {
+    val booksUiState: MainBooksUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
+    viewModel.addBookId(id = sharedViewModel.bookId)
+    val bookIdState by viewModel.bookId.collectAsStateWithLifecycle()
 
-@Composable
-fun DetailsContent() {
+    LaunchedEffect(key1 = Unit) {
+        viewModel.getBookDetails(id = bookIdState)
+    }
+
+    val detailsUiState: MainDetailsUiState by viewModel.detailsUiState.collectAsStateWithLifecycle()
+
+    // To save author name
+    var author by remember { mutableStateOf("") }
+    // To save createdAt
+    var date by remember { mutableStateOf("") }
+
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Background)
@@ -64,22 +84,25 @@ fun DetailsContent() {
             .fillMaxSize()
         ) {
             // Header Section
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .weight(1f)
-                .padding(10.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(1f)
+                    .padding(10.dp)
             ) {
                 CustomHeader(
                     hasBackButton = true,
-                    toSearchScreen = {},
-                    darkStyle = true
+                    toSearchScreen = { toSearchScreen() },
+                    darkStyle = true,
+                    onBackClicked = { toHomeScreen() }
                 )
             }
             // Book image, title, rating, viewed section
-            Row(modifier = Modifier
-                .fillMaxWidth()
-                .weight(4f)
-                .padding(20.dp),
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(4f)
+                    .padding(20.dp),
                 horizontalArrangement = Arrangement.spacedBy(20.dp)
             ) {
                 Image(
@@ -87,22 +110,35 @@ fun DetailsContent() {
                     contentDescription = null,
                     modifier = Modifier.clip(shape = RoundedCornerShape(12.dp))
                 )
-                Column(modifier = Modifier
-                    .fillMaxHeight()
-                    .weight(1f),
+                Column(
+                    modifier = Modifier
+                        .fillMaxHeight()
+                        .weight(1f),
                     verticalArrangement = Arrangement.SpaceAround
                 ) {
-                    // Title
-                    CustomText(
-                        text = "Walk needs-based invoice payment blue",
-                        fontWeight = FontWeight.Medium,
-                        fontSize = 18,
-                        fontFamily = Poppins
-                    )
+                    when (val detailsState = detailsUiState.response) {
+                        DetailsUiState.Loading -> {}
+                        is DetailsUiState.Success -> {
+                            // Title
+                            CustomText(
+                                text = "${detailsState.details.title}",
+                                fontWeight = FontWeight.Medium,
+                                fontSize = 18,
+                                fontFamily = Poppins
+                            )
+                            author = detailsState.details.author!!
+                            date = detailsState.details.createdAt!!
+                        }
+
+                        is DetailsUiState.Error -> {
+                            println("${detailsState.throwable?.message}")
+                        }
+                    }
                     // Rating & viewed
-                    Row(modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight(),
+                    Row(
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight(),
                         horizontalArrangement = Arrangement.spacedBy(20.dp)
                     ) {
                         CustomRating(
@@ -140,10 +176,11 @@ fun DetailsContent() {
                 }
             }
             // Book description section
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .weight(2f)
-                .padding(20.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f)
+                    .padding(20.dp)
             ) {
                 CustomText(
                     text = "لورم ایپسوم متن ساختگی با تولید سادگی نامفهوم از صنعت چاپ و با استفاده از طراحان گرافیک است چاپگرها و متون بلکه روزنامه و مجله در ستون و سطرآنچنان که لازم است و برای شرایط فعلی",
@@ -156,21 +193,25 @@ fun DetailsContent() {
                 Divider()
             }
             // Book author and date section
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .weight(2f)
-                .padding(20.dp)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(2f)
+                    .padding(20.dp)
             ) {
-                Row(modifier = Modifier
-                    .fillMaxSize()
+                Row(
+                    modifier = Modifier
+                        .fillMaxSize()
                 ) {
                     // Author section
-                    Column(modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
                     ) {
-                        Row(modifier = Modifier
-                            .fillMaxSize(),
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Icon(
@@ -179,29 +220,36 @@ fun DetailsContent() {
                                 modifier = Modifier.size(50.dp),
                                 tint = Primary
                             )
-                            Column(modifier = Modifier
-                                .fillMaxHeight()
-                                .weight(1f)
+                            Column(
+                                modifier = Modifier
+                                    .fillMaxHeight()
+                                    .weight(1f)
                             ) {
                                 CustomFadeButton(
                                     text = "نویسنده",
                                     containerColor = Primary.copy(alpha = 0.2f),
                                     textColor = Color.Black
                                 )
+                                // Author
                                 CustomText(
-                                    text = "نویسنده",
-                                    fontFamily = Poppins
+                                    text = author,
+                                    fontSize = 12,
+                                    maxLines = 1,
+                                    fontFamily = Poppins,
+                                    overflow = TextOverflow.Ellipsis
                                 )
                             }
                         }
                     }
                     // Date section
-                    Column(modifier = Modifier
-                        .fillMaxHeight()
-                        .weight(1f)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxHeight()
+                            .weight(1f)
                     ) {
-                        Row(modifier = Modifier
-                            .fillMaxSize(),
+                        Row(
+                            modifier = Modifier
+                                .fillMaxSize(),
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             CustomText(
@@ -209,7 +257,7 @@ fun DetailsContent() {
                                 fontSize = 12,
                             )
                             CustomText(
-                                text = "2023-11-17 07:02:56",
+                                text = date,
                                 fontSize = 12,
                                 color = LighterGray
                             )
@@ -218,20 +266,23 @@ fun DetailsContent() {
                 }
             }
             // Similar books section
-            Column(modifier = Modifier
-                .fillMaxWidth()
-                .weight(6f)
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .weight(4f)
             ) {
-                Card(modifier = Modifier
-                    .fillMaxSize(),
+                Card(
+                    modifier = Modifier
+                        .fillMaxSize(),
                     shape = RoundedCornerShape(topStart = 40.dp, topEnd = 40.dp),
                     colors = CardDefaults.cardColors(
                         containerColor = Primary
                     )
                 ) {
-                    Column(modifier = Modifier
-                        .fillMaxSize()
-                        .padding(20.dp)
+                    Column(
+                        modifier = Modifier
+                            .fillMaxSize()
+                            .padding(20.dp)
                     ) {
                         CustomText(
                             text = "کتاب های مشابه",
@@ -240,29 +291,63 @@ fun DetailsContent() {
                             color = Color.White
                         )
                         CustomSpacer(space = 30)
-                        LazyRow(
-                            contentPadding = PaddingValues(0.dp),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            userScrollEnabled = true,
-                            content = {
-                                items(count = carouselCheckedOutBooksSize(4)) {
-                                    CustomBookListStyle(
-                                        title = "Walk needs-based invoice payment blue"
+
+                        when (val booksState = booksUiState.response) {
+                            BooksUiState.Loading -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CustomText(
+                                        text = "در حال بارگذاری کتاب ها ...",
+                                        fontSize = 14,
+                                        color = Color.White
                                     )
                                 }
                             }
-                        )
+
+                            is BooksUiState.Success -> {
+                                LazyRow(
+                                    contentPadding = PaddingValues(0.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                                    userScrollEnabled = true,
+                                    content = {
+                                        items(
+                                            count = carouselCheckedOutBooksSize(
+                                                size = booksState.books.size
+                                            )
+                                        ) { position ->
+                                            CustomBookListStyle(
+                                                title = "${booksState.books[position].title}",
+                                                toDetailsScreen = {
+                                                    sharedViewModel.addBook(booksState.books[position].id)
+                                                }
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+
+                            is BooksUiState.Error -> {
+                                Column(
+                                    modifier = Modifier
+                                        .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CustomText(
+                                        text = "${booksState.throwable?.message}",
+                                        fontSize = 14,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
         }
-    }
-}
-
-@Preview
-@Composable
-private fun Preview_DetailsContent() {
-    CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        DetailsContent()
     }
 }

@@ -33,7 +33,8 @@ import com.example.design_system.R
 fun CustomHeader(
     hasBackButton: Boolean = false,
     toSearchScreen: () -> Unit,
-    darkStyle: Boolean = false
+    darkStyle: Boolean = false,
+    onBackClicked: () -> Unit = {}
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -73,7 +74,9 @@ fun CustomHeader(
                     Icon(
                         painter = painterResource(id = R.drawable.back),
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable(enabled = true, onClick = { onBackClicked() }),
                         tint = BlackColor
                     )
                 } else {
@@ -110,7 +113,9 @@ fun CustomHeader(
                     Icon(
                         painter = painterResource(id = R.drawable.back),
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable(enabled = true, onClick = { onBackClicked() }),
                         tint = Color.White
                     )
                 } else {
@@ -132,7 +137,8 @@ private fun Preview_CustomHeader() {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         CustomHeader(
             hasBackButton = false,
-            toSearchScreen = {}
+            toSearchScreen = {},
+            onBackClicked = {}
         )
     }
 }

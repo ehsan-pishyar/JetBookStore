@@ -31,7 +31,7 @@ import com.example.design_system.R
 @Composable
 fun CustomBookListStyle(
     title: String = "",
-    toDetailsScreen: () -> Unit
+    toDetailsScreen: () -> Unit = {}
 ) {
     Card(modifier = Modifier
         .width(250.dp)
@@ -92,7 +92,7 @@ fun CustomBookListStyle(
 @Composable
 fun CustomBookGridStyle(
     title: String,
-    toDetailsScreen: () -> Unit
+    toDetailsScreen: () -> Unit = {}
 ) {
     Card(modifier = Modifier
         .width(180.dp)
