@@ -22,13 +22,15 @@ fun CustomButton() {
 
 @Composable
 fun CustomFadeButton(
-    text: String = ""
+    text: String = "",
+    containerColor: Color = Color.White.copy(alpha = 0.2f),
+    textColor: Color = Color.White
 ) {
     Card(modifier = Modifier
         .wrapContentSize(),
         shape = RoundedCornerShape(6.dp),
         colors = CardDefaults.cardColors(
-            containerColor = Color.White.copy(alpha = 0.2f)
+            containerColor = containerColor
         )
     ) {
         Column(modifier = Modifier
@@ -41,7 +43,7 @@ fun CustomFadeButton(
                 text = text,
                 fontFamily = Poppins,
                 fontSize = 12,
-                color = Color.White
+                color = textColor
             )
         }
     }

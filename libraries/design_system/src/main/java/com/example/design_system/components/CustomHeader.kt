@@ -25,13 +25,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import com.example.design_system.BlackColor
 import com.example.design_system.Primary
 import com.example.design_system.R
 
 @Composable
 fun CustomHeader(
     hasBackButton: Boolean = false,
-    toSearchScreen: () -> Unit
+    toSearchScreen: () -> Unit,
+    darkStyle: Boolean = false
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -45,41 +47,80 @@ fun CustomHeader(
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
-            Card(modifier = Modifier
-                .size(40.dp)
-                .clickable(enabled = true, onClick = { toSearchScreen() }),
-                shape = RoundedCornerShape(6.dp),
-                colors = CardDefaults.cardColors(
-                    containerColor = Color.White.copy(alpha = 0.2f)
-                )
-            ) {
-                Column(modifier = Modifier
-                    .fillMaxSize(),
-                    verticalArrangement = Arrangement.Center,
-                    horizontalAlignment = Alignment.CenterHorizontally
+            if (darkStyle) {
+                Card(modifier = Modifier
+                    .size(40.dp)
+                    .clickable(enabled = true, onClick = { toSearchScreen() }),
+                    shape = RoundedCornerShape(6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Primary.copy(alpha = 0.2f)
+                    )
                 ) {
+                    Column(modifier = Modifier
+                        .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.search),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = BlackColor
+                        )
+                    }
+                }
+                if (hasBackButton) {
                     Icon(
-                        painter = painterResource(id = R.drawable.search),
+                        painter = painterResource(id = R.drawable.back),
                         contentDescription = null,
-                        modifier = Modifier.size(20.dp),
+                        modifier = Modifier.size(30.dp),
+                        tint = BlackColor
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.menu),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
+                        tint = BlackColor
+                    )
+                }
+            } else {
+                Card(modifier = Modifier
+                    .size(40.dp)
+                    .clickable(enabled = true, onClick = { toSearchScreen() }),
+                    shape = RoundedCornerShape(6.dp),
+                    colors = CardDefaults.cardColors(
+                        containerColor = Color.White.copy(alpha = 0.2f)
+                    )
+                ) {
+                    Column(modifier = Modifier
+                        .fillMaxSize(),
+                        verticalArrangement = Arrangement.Center,
+                        horizontalAlignment = Alignment.CenterHorizontally
+                    ) {
+                        Icon(
+                            painter = painterResource(id = R.drawable.search),
+                            contentDescription = null,
+                            modifier = Modifier.size(20.dp),
+                            tint = Color.White
+                        )
+                    }
+                }
+                if (hasBackButton) {
+                    Icon(
+                        painter = painterResource(id = R.drawable.back),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
+                        tint = Color.White
+                    )
+                } else {
+                    Icon(
+                        painter = painterResource(id = R.drawable.menu),
+                        contentDescription = null,
+                        modifier = Modifier.size(30.dp),
                         tint = Color.White
                     )
                 }
-            }
-            if (hasBackButton) {
-                Icon(
-                    painter = painterResource(id = R.drawable.back),
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
-                )
-            } else {
-                Icon(
-                    painter = painterResource(id = R.drawable.menu),
-                    contentDescription = null,
-                    modifier = Modifier.size(30.dp),
-                    tint = Color.White
-                )
             }
         }
     }
