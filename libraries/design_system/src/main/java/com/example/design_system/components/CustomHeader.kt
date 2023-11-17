@@ -12,6 +12,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Icon
@@ -34,7 +36,8 @@ fun CustomHeader(
     hasBackButton: Boolean = false,
     toSearchScreen: () -> Unit,
     darkStyle: Boolean = false,
-    onBackClicked: () -> Unit = {}
+    onBackClicked: () -> Unit = {},
+    onAddClick: () -> Unit = {}
 ) {
     Box(modifier = Modifier
         .fillMaxWidth()
@@ -81,9 +84,11 @@ fun CustomHeader(
                     )
                 } else {
                     Icon(
-                        painter = painterResource(id = R.drawable.menu),
+                        imageVector = Icons.Default.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable(enabled = true, onClick = { onAddClick() }),
                         tint = BlackColor
                     )
                 }
@@ -120,9 +125,11 @@ fun CustomHeader(
                     )
                 } else {
                     Icon(
-                        painter = painterResource(id = R.drawable.menu),
+                        imageVector = Icons.Default.Add,
                         contentDescription = null,
-                        modifier = Modifier.size(30.dp),
+                        modifier = Modifier
+                            .size(30.dp)
+                            .clickable(enabled = true, onClick = { onAddClick() }),
                         tint = Color.White
                     )
                 }

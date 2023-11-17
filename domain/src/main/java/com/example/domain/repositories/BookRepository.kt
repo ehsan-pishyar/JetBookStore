@@ -5,7 +5,7 @@ import kotlinx.coroutines.flow.Flow
 
 interface BookRepository {
 
-    suspend fun addBook(book: BookResponse)
+    suspend fun addBook(book: BookResponse): Flow<BookResponse>
     suspend fun updateBook(
         id: String,
         book: BookResponse

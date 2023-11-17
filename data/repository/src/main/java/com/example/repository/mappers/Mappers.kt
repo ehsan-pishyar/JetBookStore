@@ -36,3 +36,14 @@ fun BookResponse.toDto(): BookResponseDto =
         this.checkedOut,
         this.createdAt
     )
+
+fun BookResponseDto.toDomain(): BookResponse =
+    BookResponse(
+        this.title,
+        this.author,
+        this.id,
+        this.genre,
+        this.yearPublished,
+        this.checkedOut,
+        this.createdAt
+    )

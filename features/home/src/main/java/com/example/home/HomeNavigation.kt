@@ -16,7 +16,8 @@ fun NavGraphBuilder.homeScreen(
         HomeScreen(
             sharedViewModel = sharedViewModel!!,
             toSearchScreen = { navController.navigate(Screens.Search.route) },
-            toDetailsScreen = { navController.navigate(Screens.Details.route) }
+            toDetailsScreen = { navController.navigate(Screens.Details.route) },
+            toAddBookScreen = { navController.navigate(Screens.AddBook.route) }
         )
     }
 }

@@ -6,6 +6,7 @@ import com.example.domain.use_cases.DeleteBookUseCase
 import com.example.domain.use_cases.GetBookUseCase
 import com.example.domain.use_cases.GetBooksUseCase
 import com.example.domain.use_cases.GetCheckedOutBooksUseCase
+import com.example.domain.use_cases.RefreshBooksUseCase
 import com.example.domain.use_cases.UpdateBookUseCase
 import dagger.Module
 import dagger.Provides
@@ -45,4 +46,9 @@ object BookUseCaseModule {
     fun providesDeleteBookUseCase(
         repository: BookRepository
     ): DeleteBookUseCase = DeleteBookUseCase(repository = repository)
+
+    @Provides
+    fun providesRefreshBooksUseCase(
+        repository: BookRepository
+    ): RefreshBooksUseCase = RefreshBooksUseCase(repository = repository)
 }

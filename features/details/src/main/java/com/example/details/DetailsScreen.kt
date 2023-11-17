@@ -59,7 +59,8 @@ fun DetailsScreen(
     viewModel: DetailsViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel = SharedViewModel(),
     toSearchScreen: () -> Unit,
-    toHomeScreen: () -> Unit
+    toHomeScreen: () -> Unit,
+    toAddBookScreen: () -> Unit
 ) {
     val booksUiState: MainBooksUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
     viewModel.addBookId(id = sharedViewModel.bookId)
@@ -94,7 +95,8 @@ fun DetailsScreen(
                     hasBackButton = true,
                     toSearchScreen = { toSearchScreen() },
                     darkStyle = true,
-                    onBackClicked = { toHomeScreen() }
+                    onBackClicked = { toHomeScreen() },
+                    onAddClick = { toAddBookScreen() }
                 )
             }
             // Book image, title, rating, viewed section

@@ -41,7 +41,8 @@ fun HomeScreen(
     viewModel: HomeViewModel = hiltViewModel(),
     sharedViewModel: SharedViewModel = SharedViewModel(),
     toSearchScreen: () -> Unit,
-    toDetailsScreen: () -> Unit
+    toDetailsScreen: () -> Unit,
+    toAddBookScreen: () -> Unit
 ) {
     val allBooksUiState: MainAllBooksUiState by viewModel.allBooksUiState.collectAsStateWithLifecycle()
     val checkedOutUiState: MainCheckedOutBooksUiState by viewModel.checkedOutBooksUiState.collectAsStateWithLifecycle()
@@ -51,7 +52,8 @@ fun HomeScreen(
         allBooksUiState = allBooksUiState,
         checkedOutBooksUiState = checkedOutUiState,
         toSearchScreen = toSearchScreen,
-        toDetailsScreen = toDetailsScreen
+        toDetailsScreen = toDetailsScreen,
+        toAddBookScreen = toAddBookScreen
     )
 }
 
@@ -61,7 +63,8 @@ fun HomeContent(
     allBooksUiState: MainAllBooksUiState? = null,
     checkedOutBooksUiState: MainCheckedOutBooksUiState? = null,
     toSearchScreen: () -> Unit,
-    toDetailsScreen: () -> Unit
+    toDetailsScreen: () -> Unit,
+    toAddBookScreen: () -> Unit
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -89,7 +92,8 @@ fun HomeContent(
                     ) {
                         CustomHeader(
                             hasBackButton = false,
-                            toSearchScreen = { toSearchScreen() }
+                            toSearchScreen = { toSearchScreen() },
+                            onAddClick = { toAddBookScreen() }
                         )
                     }
                     // Home description section
@@ -258,7 +262,8 @@ private fun Preview_HomeContent() {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         HomeContent(
             toSearchScreen = {},
-            toDetailsScreen = {}
+            toDetailsScreen = {},
+            toAddBookScreen = {}
         )
     }
 }

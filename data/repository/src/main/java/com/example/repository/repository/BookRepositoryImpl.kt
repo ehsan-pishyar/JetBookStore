@@ -10,6 +10,7 @@ import com.example.repository.mappers.toDomain
 import com.example.repository.mappers.toDto
 import com.example.repository.mappers.toEntity
 import kotlinx.coroutines.flow.Flow
+import kotlinx.coroutines.flow.flow
 import kotlinx.coroutines.flow.map
 import kotlinx.coroutines.flow.onEach
 import javax.inject.Inject
@@ -19,8 +20,10 @@ class BookRepositoryImpl @Inject constructor(
     private val dao: BookDao
 ): BookRepository {
 
-    override suspend fun addBook(book: BookResponse) {
-        api.insertBook(book = book.toDto())
+    override suspend fun addBook(book: BookResponse): Flow<BookResponse> = flow {
+        api.insertBook(book = book.toDto()).also {
+            emit(it.toDomain())
+        }
     }
 
     override suspend fun updateBook(id: String, book: BookResponse) {
