@@ -174,7 +174,7 @@ fun DetailsContent() {
                             horizontalArrangement = Arrangement.spacedBy(10.dp)
                         ) {
                             Icon(
-                                painter = painterResource(id = R.drawable.star),
+                                painter = painterResource(id = R.drawable.person),
                                 contentDescription = null,
                                 modifier = Modifier.size(50.dp),
                                 tint = Primary
