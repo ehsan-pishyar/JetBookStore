@@ -23,3 +23,9 @@ val IranYekan = FontFamily(
     Font(R.font.iranyekan_bold, FontWeight.Bold),
     Font(R.font.iranyekan_black, FontWeight.Black)
 )
+
+val Poppins = FontFamily(
+    Font(R.font.poppins_regular, FontWeight.Normal),
+    Font(R.font.poppins_medium, FontWeight.Medium),
+    Font(R.font.poppins_bold, FontWeight.Bold)
+)
