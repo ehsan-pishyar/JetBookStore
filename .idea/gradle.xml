@@ -24,6 +24,7 @@
             <option value="$PROJECT_DIR$/features/search" />
             <option value="$PROJECT_DIR$/features/splash" />
             <option value="$PROJECT_DIR$/libraries" />
+            <option value="$PROJECT_DIR$/libraries/core" />
             <option value="$PROJECT_DIR$/libraries/design_system" />
             <option value="$PROJECT_DIR$/libraries/navigation" />
             <option value="$PROJECT_DIR$/libraries/use_cases" />

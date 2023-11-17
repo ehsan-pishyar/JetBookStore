@@ -8,13 +8,14 @@ import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.platform.LocalLayoutDirection
@@ -22,8 +23,12 @@ import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core.SharedViewModel
 import com.example.design_system.Background
 import com.example.design_system.Primary
+import com.example.design_system.carouselBooksSize
 import com.example.design_system.carouselCheckedOutBooksSize
 import com.example.design_system.components.CustomBookGridStyle
 import com.example.design_system.components.CustomBookListStyle
@@ -32,12 +37,32 @@ import com.example.design_system.components.CustomHeader
 import com.example.design_system.components.CustomText
 
 @Composable
-fun HomeScreen() {
-    HomeContent()
+fun HomeScreen(
+    viewModel: HomeViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = SharedViewModel(),
+    toSearchScreen: () -> Unit,
+    toDetailsScreen: () -> Unit
+) {
+    val allBooksUiState: MainAllBooksUiState by viewModel.allBooksUiState.collectAsStateWithLifecycle()
+    val checkedOutUiState: MainCheckedOutBooksUiState by viewModel.checkedOutBooksUiState.collectAsStateWithLifecycle()
+
+    HomeContent(
+        sharedViewModel = sharedViewModel,
+        allBooksUiState = allBooksUiState,
+        checkedOutBooksUiState = checkedOutUiState,
+        toSearchScreen = toSearchScreen,
+        toDetailsScreen = toDetailsScreen
+    )
 }
 
 @Composable
-fun HomeContent() {
+fun HomeContent(
+    sharedViewModel: SharedViewModel? = null,
+    allBooksUiState: MainAllBooksUiState? = null,
+    checkedOutBooksUiState: MainCheckedOutBooksUiState? = null,
+    toSearchScreen: () -> Unit,
+    toDetailsScreen: () -> Unit
+) {
     Box(modifier = Modifier
         .fillMaxSize()
         .background(Background)
@@ -64,7 +89,7 @@ fun HomeContent() {
                     ) {
                         CustomHeader(
                             hasBackButton = false,
-                            toSearchScreen = {}
+                            toSearchScreen = { toSearchScreen() }
                         )
                     }
                     // Home description section
@@ -98,18 +123,54 @@ fun HomeContent() {
                         .padding(20.dp),
                         verticalArrangement = Arrangement.Top
                     ) {
-                        LazyRow(
-                            contentPadding = PaddingValues(0.dp),
-                            horizontalArrangement = Arrangement.spacedBy(20.dp),
-                            userScrollEnabled = true,
-                            content = {
-                                items(count = carouselCheckedOutBooksSize(4)) {
-                                    CustomBookListStyle(
-                                        title = "Walk needs-based invoice payment blue"
+                        when (val checkedOutBooksState = checkedOutBooksUiState!!.response) {
+                            CheckedOutBooksUiState.Loading -> {
+                                Column(modifier = Modifier
+                                    .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CustomText(
+                                        text = "در حال بارگذاری کتاب ها ...",
+                                        fontSize = 14,
+                                        color = Color.White
                                     )
                                 }
                             }
-                        )
+                            is CheckedOutBooksUiState.Success -> {
+                                LazyRow(
+                                    contentPadding = PaddingValues(0.dp),
+                                    horizontalArrangement = Arrangement.spacedBy(20.dp),
+                                    userScrollEnabled = true,
+                                    content = {
+                                        items(count = carouselCheckedOutBooksSize(
+                                            size = checkedOutBooksState.books.size
+                                        )) { position ->
+                                            CustomBookListStyle(
+                                                title = "${checkedOutBooksState.books[position].title}",
+                                                toDetailsScreen = {
+                                                    sharedViewModel?.addBook(checkedOutBooksState.books[position].id)
+                                                    toDetailsScreen()
+                                                }
+                                            )
+                                        }
+                                    }
+                                )
+                            }
+                            is CheckedOutBooksUiState.Error -> {
+                                Column(modifier = Modifier
+                                    .fillMaxSize(),
+                                    verticalArrangement = Arrangement.Center,
+                                    horizontalAlignment = Alignment.CenterHorizontally
+                                ) {
+                                    CustomText(
+                                        text = "${checkedOutBooksState.throwable?.message}",
+                                        fontSize = 14,
+                                        color = Color.White
+                                    )
+                                }
+                            }
+                        }
                     }
                 }
             }
@@ -136,18 +197,55 @@ fun HomeContent() {
                     .fillMaxWidth()
                     .weight(5f)
                 ) {
-                    LazyRow(
-                        contentPadding = PaddingValues(0.dp),
-                        horizontalArrangement = Arrangement.spacedBy(20.dp),
-                        userScrollEnabled = true,
-                        content = {
-                            items(count = carouselCheckedOutBooksSize(4)) {
-                                CustomBookGridStyle(
-                                    title = "Walk needs-based invoice payment blue"
+                    when (val allBooksState = allBooksUiState!!.response) {
+                        AllBooksUiState.Loading -> {
+                            Column(modifier = Modifier
+                                .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CustomText(
+                                    text = "در حال بارگذاری کتاب ها ...",
+                                    fontSize = 14,
+                                    color = Color.White
                                 )
                             }
                         }
-                    )
+                        is AllBooksUiState.Success -> {
+                            LazyRow(
+                                contentPadding = PaddingValues(0.dp),
+                                horizontalArrangement = Arrangement.spacedBy(20.dp),
+                                userScrollEnabled = true,
+                                content = {
+                                    items(count = carouselBooksSize(
+                                        size = allBooksState.books.size
+                                    )
+                                    ) { position ->
+                                        CustomBookGridStyle(
+                                            title = "${allBooksState.books[position].title}",
+                                            toDetailsScreen = {
+                                                sharedViewModel?.addBook(allBooksState.books[position].id)
+                                                toDetailsScreen()
+                                            }
+                                        )
+                                    }
+                                }
+                            )
+                        }
+                        is AllBooksUiState.Error -> {
+                            Column(modifier = Modifier
+                                .fillMaxSize(),
+                                verticalArrangement = Arrangement.Center,
+                                horizontalAlignment = Alignment.CenterHorizontally
+                            ) {
+                                CustomText(
+                                    text = "${allBooksState.throwable?.message}",
+                                    fontSize = 14,
+                                    color = Color.White
+                                )
+                            }
+                        }
+                    }
                 }
             }
         }
@@ -158,6 +256,9 @@ fun HomeContent() {
 @Composable
 private fun Preview_HomeContent() {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
-        HomeContent()
+        HomeContent(
+            toSearchScreen = {},
+            toDetailsScreen = {}
+        )
     }
 }

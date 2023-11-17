@@ -37,6 +37,9 @@ interface BookDao {
     @Query("SELECT * FROM `books`")
     fun fetchBooks(): Flow<List<BookResponseEntity>>
 
+    @Query("SELECT * FROM `books` WHERE checked_out = :checkedOut")
+    fun fetchCheckedOutBooks(checkedOut: Boolean = true): Flow<List<BookResponseEntity>>
+
     @Query("SELECT * FROM `books` WHERE id = :id")
     fun fetchBook(id: String): Flow<BookResponseEntity>
 

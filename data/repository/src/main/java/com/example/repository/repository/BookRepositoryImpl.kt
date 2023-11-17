@@ -37,6 +37,16 @@ class BookRepositoryImpl @Inject constructor(
         }
     }
 
+    override fun getCheckedOutBooks(): Flow<List<BookResponse>> {
+        return dao.fetchCheckedOutBooks().map { booksEntity ->
+            booksEntity.map(BookResponseEntity::toDomain)
+        }.onEach {
+            if (it.isEmpty()) {
+                refreshBooks()
+            }
+        }
+    }
+
     override fun getBook(id: String): Flow<BookResponse> {
         return dao.fetchBook(id = id).map(BookResponseEntity::toDomain)
     }

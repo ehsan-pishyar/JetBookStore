@@ -22,41 +22,41 @@ import javax.net.ssl.X509TrustManager
 object NetworkModule {
 
     // Used to log HTTP request and response information
-    @[Provides Singleton]
-    fun providesLoggingInterceptor(): HttpLoggingInterceptor =
-        HttpLoggingInterceptor().apply {
-            level = HttpLoggingInterceptor.Level.BODY
-        }
+//    @[Provides Singleton]
+//    fun providesLoggingInterceptor(): HttpLoggingInterceptor =
+//        HttpLoggingInterceptor().apply {
+//            level = HttpLoggingInterceptor.Level.BODY
+//        }
 
     // Used to add SSL & timeouts to retrofit requests
-    @[Provides Singleton]
-    fun providesOkHttpsBuilder(
-        httpLoggingInterceptor: HttpLoggingInterceptor
-    ): OkHttpClient {
-        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
-        trustManagerFactory.init(null as KeyStore?)
-
-        // Create an SSLContext with the trust manager
-        val sslContext = SSLContext.getInstance("TLS")
-        sslContext.init(null, trustManagerFactory.trustManagers, null)
-
-        return OkHttpClient.Builder()
-            .addInterceptor(httpLoggingInterceptor)
-            .readTimeout(30, TimeUnit.SECONDS)
-            .writeTimeout(30, TimeUnit.SECONDS)
-            .connectTimeout(30, TimeUnit.SECONDS)
-            .sslSocketFactory(sslContext.socketFactory, trustManagerFactory.trustManagers[0] as X509TrustManager)
-            .hostnameVerifier { _, _ -> true }
-            .build()
-    }
+//    @[Provides Singleton]
+//    fun providesOkHttpsBuilder(
+//        httpLoggingInterceptor: HttpLoggingInterceptor
+//    ): OkHttpClient {
+//        val trustManagerFactory = TrustManagerFactory.getInstance(TrustManagerFactory.getDefaultAlgorithm())
+//        trustManagerFactory.init(null as KeyStore?)
+//
+//        // Create an SSLContext with the trust manager
+//        val sslContext = SSLContext.getInstance("TLS")
+//        sslContext.init(null, trustManagerFactory.trustManagers, null)
+//
+//        return OkHttpClient.Builder()
+//            .addInterceptor(httpLoggingInterceptor)
+//            .readTimeout(30, TimeUnit.SECONDS)
+//            .writeTimeout(30, TimeUnit.SECONDS)
+//            .connectTimeout(30, TimeUnit.SECONDS)
+//            .sslSocketFactory(sslContext.socketFactory, trustManagerFactory.trustManagers[0] as X509TrustManager)
+//            .hostnameVerifier { _, _ -> true }
+//            .build()
+//    }
 
     // Used to create only one instance of retrofit
     @[Provides Singleton]
-    fun providesRetrofit(okHttpClient: OkHttpClient): Retrofit =
+    fun providesRetrofit(): Retrofit =
         Retrofit.Builder()
             .baseUrl(NetworkConstants.BASE_URL)
             .addConverterFactory(GsonConverterFactory.create())
-            .client(okHttpClient)
+//            .client(okHttpClient)
             .build()
 
     // Used to create only one instance of ApiService interface

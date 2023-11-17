@@ -62,6 +62,7 @@ dependencies {
     implementation(project(mapOf("path" to ":features:details")))
     implementation(project(mapOf("path" to ":features:home")))
     implementation(project(mapOf("path" to ":features:search")))
+    implementation(project(mapOf("path" to ":libraries:use_cases")))
     val androidCoreVersion = "1.10.1"
     val lifecycleVersion = "2.6.2"
     val composeVersion = "1.7.2"

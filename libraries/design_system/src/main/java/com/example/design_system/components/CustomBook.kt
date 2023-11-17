@@ -1,6 +1,7 @@
 package com.example.design_system.components
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -29,11 +30,13 @@ import com.example.design_system.R
 
 @Composable
 fun CustomBookListStyle(
-    title: String = ""
+    title: String = "",
+    toDetailsScreen: () -> Unit
 ) {
     Card(modifier = Modifier
         .width(250.dp)
-        .height(170.dp),
+        .height(170.dp)
+        .clickable(enabled = true, onClick = { toDetailsScreen() }),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -88,11 +91,13 @@ fun CustomBookListStyle(
 
 @Composable
 fun CustomBookGridStyle(
-    title: String
+    title: String,
+    toDetailsScreen: () -> Unit
 ) {
     Card(modifier = Modifier
         .width(180.dp)
-        .height(260.dp),
+        .height(260.dp)
+        .clickable(enabled = true, onClick = { toDetailsScreen() }),
         shape = RoundedCornerShape(18.dp),
         colors = CardDefaults.cardColors(
             containerColor = Color.White
@@ -158,7 +163,8 @@ fun CustomBookGridStyle(
 @Composable
 private fun Preview_CustomBookListStyle() {
     CustomBookListStyle(
-        title = "Walk needs-based invoice payment blue"
+        title = "Walk needs-based invoice payment blue",
+        toDetailsScreen = {}
     )
 }
 
@@ -166,6 +172,7 @@ private fun Preview_CustomBookListStyle() {
 @Composable
 private fun Preview_CustomBookGridStyle() {
     CustomBookGridStyle(
-        title = "Walk needs-based invoice payment blue"
+        title = "Walk needs-based invoice payment blue",
+        toDetailsScreen = {}
     )
 }
