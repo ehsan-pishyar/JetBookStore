@@ -8,4 +8,15 @@ data class BookResponse(
     val yearPublished: Int?,
     val checkedOut: Boolean?,
     val createdAt: String?
-)
+) {
+    fun doesMatchSearchQuery(query: String): Boolean {
+        val matchingCombinations = listOf(
+            "$title",
+            "${title?.first()}"
+        )
+
+        return matchingCombinations.any {
+            it.contains(query, ignoreCase = true)
+        }
+    }
+}

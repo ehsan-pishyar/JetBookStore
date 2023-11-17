@@ -149,7 +149,7 @@ fun HomeContent(
                                             CustomBookListStyle(
                                                 title = "${checkedOutBooksState.books[position].title}",
                                                 toDetailsScreen = {
-                                                    sharedViewModel?.addBook(checkedOutBooksState.books[position].id)
+                                                    sharedViewModel?.addBookId(checkedOutBooksState.books[position].id)
                                                     toDetailsScreen()
                                                 }
                                             )
@@ -224,7 +224,7 @@ fun HomeContent(
                                         CustomBookGridStyle(
                                             title = "${allBooksState.books[position].title}",
                                             toDetailsScreen = {
-                                                sharedViewModel?.addBook(allBooksState.books[position].id)
+                                                sharedViewModel?.addBookId(allBooksState.books[position].id)
                                                 toDetailsScreen()
                                             }
                                         )

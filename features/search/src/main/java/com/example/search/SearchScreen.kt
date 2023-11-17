@@ -19,6 +19,7 @@ import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.CompositionLocalProvider
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -30,22 +31,53 @@ import androidx.compose.ui.text.style.TextOverflow
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.LayoutDirection
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.collectAsStateWithLifecycle
+import com.example.core.SharedViewModel
 import com.example.design_system.Background
 import com.example.design_system.components.CustomText
 import com.example.design_system.R
 import com.example.design_system.components.CustomSpacer
 import com.example.design_system.components.CustomTextField
+import com.example.domain.models.BookResponse
 
 @Composable
-fun SearchScreen() {
-    SearchContent {
+fun SearchScreen(
+    viewModel: SearchViewModel = hiltViewModel(),
+    sharedViewModel: SharedViewModel = SharedViewModel(),
+    toDetailsScreen: () -> Unit
+) {
+    val booksUiState: MainSearchUiState by viewModel.booksUiState.collectAsStateWithLifecycle()
+    val searchText by viewModel.searchText.collectAsStateWithLifecycle()
+    val isSearching by viewModel.isSearching.collectAsStateWithLifecycle()
+    val books by viewModel.books.collectAsStateWithLifecycle()
 
+    when (val booksState = booksUiState.response) {
+        SearchUiState.Loading -> {}
+        is SearchUiState.Success -> {
+            viewModel.addBooks(books = booksState.books)
+        }
+        is SearchUiState.Error -> {}
     }
+
+    SearchContent(
+        viewModel = viewModel,
+        sharedViewModel = sharedViewModel,
+        searchText = searchText,
+        isSearching = isSearching,
+        books = books,
+        toDetailsScreen = { toDetailsScreen() }
+    )
 }
 
 @Composable
 fun SearchContent(
-    toBookDetailsScreen: () -> Unit
+    viewModel: SearchViewModel? = null,
+    sharedViewModel: SharedViewModel? = null,
+    searchText: String = "",
+    isSearching: Boolean = false,
+    books: List<BookResponse> = emptyList(),
+    toDetailsScreen: () -> Unit
 ) {
     Box(modifier = Modifier
         .fillMaxSize()
@@ -57,8 +89,8 @@ fun SearchContent(
         ) {
             CustomTextField(
                 placeholder = "اسم کتاب رو وارد کن ...",
-                onValueChange = {},
-                value = "",
+                onValueChange = viewModel!!::onSearchTextChanged,
+                value = searchText,
                 leadingIcon = {
                     Image(
                         painter = painterResource(id = R.drawable.search),
@@ -67,7 +99,7 @@ fun SearchContent(
                 }
             )
             CustomSpacer()
-            if (true) {
+            if (isSearching) {
                 Box(modifier = Modifier.fillMaxSize()) {
                     CircularProgressIndicator(
                         modifier = Modifier.align(Alignment.Center)
@@ -78,11 +110,12 @@ fun SearchContent(
                     userScrollEnabled = true,
                     verticalArrangement = Arrangement.spacedBy(10.dp),
                     content = {
-                        items(count = 1) { position ->
+                        items(count = books.size) { position ->
                             ListItems(
-                                title = "محصول تست",
+                                title = "${books[position].title}",
                                 onBookClick = {
-                                    toBookDetailsScreen()
+                                    sharedViewModel?.addBookId(books[position].id)
+                                    toDetailsScreen()
                                 }
                             )
                         }
@@ -101,7 +134,7 @@ fun ListItems(
     Card(modifier = Modifier
         .fillMaxWidth()
         .height(90.dp)
-        .clickable { onBookClick() },
+        .clickable(enabled = true, onClick = { onBookClick() }),
         elevation = CardDefaults.cardElevation(
             defaultElevation = 0.dp
         ),
@@ -148,7 +181,7 @@ fun ListItems(
 private fun Preview_SearchContent() {
     CompositionLocalProvider(LocalLayoutDirection provides LayoutDirection.Rtl) {
         SearchContent(
-            toBookDetailsScreen = {}
+            toDetailsScreen = {}
         )
     }
 }

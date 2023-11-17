@@ -322,7 +322,7 @@ fun DetailsScreen(
                                             CustomBookListStyle(
                                                 title = "${booksState.books[position].title}",
                                                 toDetailsScreen = {
-                                                    sharedViewModel.addBook(booksState.books[position].id)
+                                                    sharedViewModel.addBookId(booksState.books[position].id)
                                                 }
                                             )
                                         }

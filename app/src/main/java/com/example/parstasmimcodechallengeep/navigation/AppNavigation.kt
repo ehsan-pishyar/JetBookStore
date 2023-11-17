@@ -29,7 +29,10 @@ fun AppNavigation(
             sharedViewModel = sharedViewModel,
             navController = navHostController
         )
-        searchScreen(navController = navHostController)
+        searchScreen(
+            sharedViewModel = sharedViewModel,
+            navController = navHostController
+        )
         detailsScreen(
             sharedViewModel = sharedViewModel,
             navController = navHostController
