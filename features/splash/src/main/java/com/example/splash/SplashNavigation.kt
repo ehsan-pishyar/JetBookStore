@@ -11,6 +11,8 @@ fun NavGraphBuilder.splashScreen(
     composable(
         route = Screens.Splash.route
     ) {
-        SplashScreen()
+        SplashScreen(
+            toHomeScreen = { navController.navigate(route = Screens.Home.route) }
+        )
     }
 }
