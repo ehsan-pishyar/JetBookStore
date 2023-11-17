@@ -33,7 +33,7 @@ import com.example.design_system.components.CustomText
 
 @Composable
 fun HomeScreen() {
-
+    HomeContent()
 }
 
 @Composable

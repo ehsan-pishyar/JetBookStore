@@ -38,7 +38,7 @@ import com.example.design_system.components.CustomTextField
 
 @Composable
 fun SearchScreen() {
-
+    SearchScreen()
 }
 
 @Composable

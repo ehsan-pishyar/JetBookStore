@@ -51,7 +51,7 @@ import com.example.design_system.components.CustomViewed
 
 @Composable
 fun DetailsScreen() {
-
+    DetailsContent()
 }
 
 @Composable

@@ -18,7 +18,7 @@ fun AppNavigation(
     NavHost(
         route = "route",
         navController = navHostController,
-        startDestination = Screens.Search.route
+        startDestination = Screens.Splash.route
     ) {
         splashScreen(navController = navHostController)
         homeScreen(navController = navHostController)
